@@ -42,8 +42,8 @@ WHERE iata = "MQT";
 
 # Check if airport code is unique for each row
 SELECT 
-	COUNT(*) as Total_Rows,
-	COUNT(DISTINCT iata) as Num_Unique_Airports,
+    COUNT(*) as Total_Rows,
+    COUNT(DISTINCT iata) as Num_Unique_Airports,
     COUNT(DISTINCT country) as Num_Unique_Countries
 FROM airport_list;
 
@@ -79,7 +79,7 @@ DROP TABLE IF EXISTS iata;
 # Create new table iata 
 # table iata will have PK and two fields name and code to store
 CREATE TABLE iata (
-	AirportID INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    AirportID INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     AirportCode VARCHAR(255) NOT NULL,
     AirportName VARCHAR(255) NOT NULL
 );
@@ -124,7 +124,7 @@ ADD FOREIGN KEY (AirportID) REFERENCES iata(AirportID);
 # Create city table with an id column
 DROP TABLE IF EXISTS city;
 CREATE TABLE city (
-	cityID INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    cityID INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     cityName VARCHAR(255) NOT NULL
 );
 
@@ -170,7 +170,7 @@ ADD FOREIGN KEY (cityID) REFERENCES city(cityID);
 # Create new table state with an id column
 DROP TABLE IF EXISTS state;
 CREATE TABLE state (
-	stateID INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    stateID INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     stateName VARCHAR(255) NOT NULL
 );
 
@@ -216,8 +216,8 @@ ADD FOREIGN KEY (stateID) REFERENCES state(stateID);
 
 # 1. Report location information of all airports in chicago
 SELECT  i.AirportName as "Airport",
-		i.AirportCode as "Code",
-		c.cityName as "City",
+	i.AirportCode as "Code",
+	c.cityName as "City",
         s.stateName as "State",
         a.latitude as "Latitude",
         a.longitude as "longitude"
@@ -229,8 +229,8 @@ WHERE c.cityName = "Chicago";
 
 # 2. Report information of all airports and their cities in the state of MA or IL
 SELECT  i.AirportName as "Airport",
-		i.AirportCode as "Code",
-		c.cityName as "City",
+	i.AirportCode as "Code",
+	c.cityName as "City",
         s.stateName as "State"
 FROM airport_list a
 LEFT JOIN iata i on a.listID = i.AirportID
@@ -240,9 +240,9 @@ WHERE s.stateName = "MA" or s.stateName = "IL";
 
 # 3. Report airports with unknown cities or states
 SELECT  i.AirportName as "Airport",
-		c.cityName as "City",
+	c.cityName as "City",
         s.stateName as "State",
-		a.latitude as "latitude",
+	a.latitude as "latitude",
         a.longitude as "longitude"
 FROM airport_list a
 LEFT JOIN iata i on a.listID = i.AirportID
@@ -252,8 +252,8 @@ WHERE s.stateName = "Unknown" or c.cityName = "Unknown";
 
 # 4. Report airports in states whose names start with "M"
 SELECT	ROW_NUMBER() OVER(ORDER BY s.stateName, i.AirportName) as "No.",
-		i.AirportName as "Airport", 
-		s.stateName as "State"
+	i.AirportName as "Airport", 
+	s.stateName as "State"
 FROM airport_list a
 LEFT JOIN state s on s.stateID = a.stateID
 LEFT JOIN iata i on i.AirportID = a.AirportID
@@ -263,8 +263,8 @@ ORDER BY State, Airport;
 # 5. Show states with the top 5 highest number of airports and their ranking
 WITH CTE as (
 SELECT	s.stateName as "State",
-		COUNT(DISTINCT i.AirportName) as "Airport_Count",
-		DENSE_RANK() OVER(ORDER BY COUNT(DISTINCT i.AirportName) DESC) as "Ranking"
+	COUNT(DISTINCT i.AirportName) as "Airport_Count",
+	DENSE_RANK() OVER(ORDER BY COUNT(DISTINCT i.AirportName) DESC) as "Ranking"
 FROM airport_list a
 LEFT JOIN state s on s.stateID = a.stateID
 LEFT JOIN iata i on i.AirportID = a.AirportID
