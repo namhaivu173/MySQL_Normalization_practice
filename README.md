@@ -1,4 +1,4 @@
-<h1 align="left">
+<h1 align="center">
 MySQL DB Normalization Practice
 </h1>
 
